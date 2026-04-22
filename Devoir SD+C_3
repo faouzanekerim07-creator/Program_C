@@ -1,0 +1,129 @@
+/**Name	: Devoir SD+C_3
+Purpose : structure 
+Authors : GROUPE 9
+ 1-) BASSA Dissirama Landry (IABD)
+  2-) DOGBE Kwami Wogbemase Emmanuel Jésus (GM)
+  3-)KERIM Faouzâne(GM)
+  4-)KONDO Ismaël (GM)
+  5-) POULI Pirénam Aimée(GM)
+  6-) TAGBA ESSOZIMNA DARIUS (GC)
+  7-) WASTE Mossi (GM)
+  8-) DELAZIAWO Komlan Ghislain (GM)
+  
+Created : 21 AVRIL 2026
+Updated : 21 AVRIL 2026
+**/
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_ETUDIANTS 100
+
+typedef struct {
+    int numeroCarte;
+    char nom[50];
+    char prenom[50];
+    float noteDST;
+    float noteExamen;
+    float moyenneBrute;
+    float bonus;
+    float moyenneDefinitive;
+} Etudiant;
+
+// Saisie d'un étudiant
+Etudiant saisirEtudiant() {
+    Etudiant e;
+    printf("Numero de carte : ");
+    scanf("%d", &e.numeroCarte);
+    printf("Nom : ");
+    scanf("%s", e.nom);
+    printf("Prenom : ");
+    scanf("%s", e.prenom);
+    printf("Note DST : ");
+    scanf("%f", &e.noteDST);
+    printf("Note Examen : ");
+    scanf("%f", &e.noteExamen);
+    return e;
+}
+
+// Calcul de la moyenne brute pour tous
+void calculerMoyennesBrutes(Etudiant t[], int nb) {
+    for (int i = 0; i < nb; i++) {
+        t[i].moyenneBrute = 0.45 * t[i].noteDST + 0.55 * t[i].noteExamen;
+    }
+}
+
+// Calcul bonus + moyenne définitive
+void calculerBonusEtMoyennesDefinitives(Etudiant t[], int nb) {
+    for (int i = 0; i < nb; i++) {
+        if (t[i].moyenneBrute < 10)
+            t[i].bonus = 1.0;
+        else if (t[i].moyenneBrute <= 15)
+            t[i].bonus = 0.5;
+        else
+            t[i].bonus = 0.0;
+
+        t[i].moyenneDefinitive = t[i].moyenneBrute + t[i].bonus;
+    }
+}
+
+// Moyenne générale de l'UE
+float moyenneGeneraleUE(Etudiant t[], int nb) {
+    float somme = 0;
+    for (int i = 0; i < nb; i++) {
+        somme += t[i].moyenneDefinitive;
+    }
+    return somme / nb;
+}
+
+// Affichage des résultats
+void afficherResultats(Etudiant t[], int nb, float moyGen) {
+    printf("\n--- RESULTATS ---\n");
+    printf("Moyenne generale de l'UE : %.2f\n\n", moyGen);
+    printf("-----------------------------------------------------------"
+           "----------------------------------------\n");
+    printf("Carte | Nom Prenom          |  DST  | Examen | Brute | Bonus | Definitive | Validation\n");
+    printf("-----------------------------------------------------------"
+           "----------------------------------------\n");
+
+    for (int i = 0; i < nb; i++) {
+        // Affichage sans concaténation dangereuse
+        printf("%5d | %-19s | %5.2f | %6.2f | %5.2f | %5.2f | %10.2f | ",
+               t[i].numeroCarte,
+               strcat(strcpy(t[i].nom, " "), t[i].prenom), // simple pour l'affichage
+               t[i].noteDST,
+               t[i].noteExamen,
+               t[i].moyenneBrute,
+               t[i].bonus,
+               t[i].moyenneDefinitive);
+
+        if (t[i].moyenneDefinitive >= moyGen)
+            printf("VALIDE\n");
+        else
+            printf("NON VALIDE\n");
+    }
+}
+
+int main() {
+    Etudiant etudiants[MAX_ETUDIANTS];
+    int nbEtudiants = 0;
+    char reponse;
+
+    printf("=== Gestion des UE ===\n");
+    do {
+        printf("\nSaisie de l'etudiant %d :\n", nbEtudiants + 1);
+        etudiants[nbEtudiants] = saisirEtudiant();
+        nbEtudiants++;
+
+        printf("Voulez-vous ajouter un autre etudiant ? (o/n) : ");
+        scanf(" %c", &reponse);
+    } while (reponse == 'o' || reponse == 'O');
+
+    calculerMoyennesBrutes(etudiants, nbEtudiants);
+    calculerBonusEtMoyennesDefinitives(etudiants, nbEtudiants);
+
+    float moyenneGen = moyenneGeneraleUE(etudiants, nbEtudiants);
+    afficherResultats(etudiants, nbEtudiants, moyenneGen);
+
+    return 0;
+}
