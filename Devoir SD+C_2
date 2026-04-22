@@ -1,0 +1,89 @@
+/**
+name: Devoir SD+C_2
+purpose: Produit scalaire avec pointeurs 
+
+Authors:GROUPE 9
+
+  1-) BASSA Dissirama Landry (IABD)
+  2-) DOGBE Kwami Wogbemase Emmanuel Jésus (GM)
+  3-)KERIM Faouzâne(GM)
+  4-)KONDO Ismaël (GM)
+  5-) POULI Pirénam Aimée
+  6-) TAGBA ESSOZIMNA DARIUS (GC)
+  7-) WASTE Mossi (GM)
+  8-) DELAZIAWO Komlan Ghislain (GM)
+        
+created:21 Avril 2026
+updated:21 Avril 2026
+**/
+
+#include<stdio.h>
+#include<stdlib.h>
+
+//Declaration des variables globales 
+int n,i;
+int *U;
+int *V;
+
+// fonction pour recueillir la taille des vecteurs 
+
+void lireTaille (){
+ do{
+  printf("Entrer la taille des deux vecteurs n<50\n");
+  scanf("%d",&n);
+ }while(n>50);
+ 
+}
+
+// fonction de remplissage des cases 
+
+void cas_vect(){
+  for(i=0;i<=n-1;i++){
+     printf("Entrer pour le vecteur U la valeur de la case %d", i+1);
+     printf(" ");
+     U=(int *)malloc(n*sizeof(int));
+     if(!U){
+        printf("Erreur !!!");
+        exit(-1);
+     }
+     else{
+       scanf("%d",(U+i));
+     }
+  }
+  for(i=0;i<=n-1;i++){
+     printf("Entrer pour le vecteur V la valeur de la case  %d", i+1);
+     printf(" ");
+     V=(int *)malloc(n*sizeof(int));
+     if(!V){
+        printf("Erreur !!!");
+        exit(-1);
+     }
+     else{
+       scanf("%d",(V+i));
+     }
+  }
+}
+
+// fonction de calcul du produit scalaire 
+
+int prod_scal(){
+   int P;
+   P =0;
+   for(i=0;i<=n-1;i++){
+      P += (*(U+i))*(*(V+i));
+      free(U);
+      free(V);
+   }
+   return P;
+}
+
+// fonction principale 
+
+int main ()
+{
+  printf("programme de calcul du produit scalaire de deux vecteurs\n");
+  lireTaille();
+  cas_vect();
+  printf("la valeur du produit scalaire est %d",prod_scal());
+  return 0;
+}
